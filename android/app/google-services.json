@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "965002991981",
+    "project_id": "mylez-gidah-project",
+    "storage_bucket": "mylez-gidah-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965002991981:android:7eff87ea8f0c147bbb2264",
+        "android_client_info": {
+          "package_name": "com.example.gidah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-gGGIekyO8f7_y0E6GLlpBXqBCPXQ504"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
