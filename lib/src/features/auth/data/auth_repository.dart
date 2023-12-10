@@ -1,76 +1,81 @@
-// import 'dart:developer';
+import 'dart:developer';
 
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// class AuthRepository {
-//   const AuthRepository(this._auth);
-//   final FirebaseAuth _auth;
+class AuthRepository {
+  const AuthRepository(this._auth);
+  final FirebaseAuth _auth;
 
-//   //getters
-//   User? get userDetails => _auth.currentUser;
-//   Stream<User?> get authStateChange => _auth.idTokenChanges();
+  //getters
+  User? get userDetails => _auth.currentUser;
+  Stream<User?> get authStateChange => _auth.idTokenChanges();
 
-//   Future<User?> signInWithEmailAndPassword(
-//       //sign in method
-//       String email,
-//       String password) async {
-//     try {
-//       final result = await _auth.signInWithEmailAndPassword(
-//         email: email,
-//         password: password,
-//       );
-//       log('Sign in successful');
-//       return result.user;
-//     } on FirebaseAuthException catch (e) {
-//       if (e.code == 'user-not-found') {
-//         throw AuthException('User not found');
-//       } else if (e.code == 'wrong-password') {
-//         throw AuthException('Wrong password');
-//       } else {
-//         log(e.message ?? 'No error occured');
-//         throw AuthException('An error occured. Please try again later');
-//       }
-//     }
-//   }
+  Future<User?> signInWithEmailAndPassword(
+      //sign in method
+      String email,
+      String password) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      log('Sign in successful');
+      return result.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw AuthException('User not found');
+      } else if (e.code == 'wrong-password') {
+        throw AuthException('Wrong password');
+      } else {
+        log(e.message ?? 'No error occured');
+        throw AuthException('An error occured. Please try again later');
+      }
+    }
+  }
 
-//   Future<User?> signUp(String email, String password) async {
-//     try {
-//       final result = await _auth.createUserWithEmailAndPassword(
-//           email: email, password: password);
-//       log('Sign up successful');
-//       return result.user;
-//     } on FirebaseAuthException catch (e) {
-//       throw Exception(e.message);
-//     }
-//   }
+  Future<User?> signUp(String email, String password) async {
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      log('Sign up successful');
+      return result.user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    }
+  }
 
-//   //sign out method
-//   Future<void> signOut() async {
-//     await _auth.signOut();
-//   }
-// }
+  //sign out method
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 
-// class AuthException implements Exception {
-//   final String message;
+  //password reset
+  Future<void> resetPassword({required String email}) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+}
 
-//   AuthException(this.message);
+class AuthException implements Exception {
+  final String message;
 
-//   @override
-//   String toString() {
-//     return message;
-//   }
-// }
+  AuthException(this.message);
 
-// //Providers
-// final authRepositoryProvider = Provider<AuthRepository>((ref) {
-//   return AuthRepository(FirebaseAuth.instance);
-// });
+  @override
+  String toString() {
+    return message;
+  }
+}
 
-// final authStateProvider = StreamProvider<User?>((ref) {
-//   return ref.read(authRepositoryProvider).authStateChange;
-// });
+//Providers
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepository(FirebaseAuth.instance);
+});
 
-// final userDetailsProvider = Provider.autoDispose<User?>((ref) {
-//   return ref.read(authRepositoryProvider).userDetails;
-// });
+final authStateProvider = StreamProvider<User?>((ref) {
+  return ref.read(authRepositoryProvider).authStateChange;
+});
+
+final userDetailsProvider = FutureProvider.autoDispose<User?>((ref) {
+  return ref.read(authRepositoryProvider).userDetails;
+});

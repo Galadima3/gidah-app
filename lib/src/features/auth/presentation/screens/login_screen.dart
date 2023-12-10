@@ -3,8 +3,12 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/main.dart';
-import 'package:gidah/src/features/auth/data/auth_state.dart';
+
+import 'package:gidah/src/features/auth/data/auth_repository.dart';
+
+import 'package:gidah/src/features/auth/presentation/screens/password_reset.dart';
+import 'package:gidah/src/features/auth/presentation/screens/register_screen.dart';
+import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);
@@ -19,7 +23,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
   final emailFormKey = GlobalKey<FormState>();
   final passwordFormKey = GlobalKey<FormState>();
 
@@ -34,12 +38,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> signInMethod(
       String email, String password, WidgetRef ref) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     ref.read(loadingProvider.notifier).state = true;
-    final auth = ref.read(authStateNotifierProvider.notifier);
-    await auth.signIn(email, password).then((value) {
+    final auth = ref.read(authRepositoryProvider);
+    await auth.signInWithEmailAndPassword(email, password).then((value) {
       ref.read(loadingProvider.notifier).state = false;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => const HomeScreen(),
       ));
     }).onError((error, stackTrace) {
       log(error.toString());
@@ -133,20 +138,27 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             //checkbox
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Forgot Password?',
-                    style: GoogleFonts.urbanist(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                ],
+            InkWell(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return const ResetPasswordScreen();
+                },
+              )),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Forgot Password?',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -214,16 +226,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Don\'t have an account? ',
                     style: GoogleFonts.urbanist(
-                      fontSize: 15,
+                      fontSize: 14.5,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    'Sign up',
-                    style: GoogleFonts.urbanist(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.blue),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return const RegisterScreen();
+                      },
+                    )),
+                    child: Text(
+                      'Sign up',
+                      style: GoogleFonts.urbanist(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blue),
+                    ),
                   )
                 ],
               ),

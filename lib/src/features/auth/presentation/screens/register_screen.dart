@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/main.dart';
-import 'package:gidah/src/features/auth/data/auth_state.dart';
+
+import 'package:gidah/src/features/auth/data/auth_repository.dart';
+
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/auth/presentation/screens/profile_details.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);
@@ -31,11 +33,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> signUpMethod(
       String email, String password, WidgetRef ref) async {
     ref.read(loadingProvider.notifier).state = true;
-    final auth = ref.read(authStateNotifierProvider.notifier);
+    final auth = ref.read(authRepositoryProvider);
     await auth.signUp(email, password).then((value) {
       ref.read(loadingProvider.notifier).state = false;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => const ProfileDetails(),
       ));
     }).onError((error, stackTrace) {
       log(error.toString());

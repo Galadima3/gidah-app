@@ -1,65 +1,75 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthState {
-  final User? user;
+// class AuthState {
+//   final User? user;
 
-  AuthState(this.user);
-}
+//   AuthState(this.user);
+// }
 
-class AuthStateNotifier extends StateNotifier<AuthState> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+// class AuthStateNotifier extends StateNotifier<AuthState> {
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AuthStateNotifier() : super(AuthState(null));
+//   AuthStateNotifier() : super(AuthState(null));
 
-  Future<void> signUp(String email, String password) async {
-    try {
-      final result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      state = AuthState(result.user);
-    } on FirebaseAuthException catch (e) {
-      throw AuthException(e.message ?? 'An error occurred during sign-up.');
-    }
-  }
+//   Stream get isUserSignedIn => _auth.authStateChanges();
 
-  Future<void> signIn(String email, String password) async {
-    try {
-      final result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      state = AuthState(result.user);
-    } on FirebaseAuthException catch (e) {
-      throw AuthException(e.message ?? 'An error occurred during sign-in.');
-    }
-  }
+//   Future<void> signUp(String email, String password) async {
+//     try {
+//       final result = await _auth.createUserWithEmailAndPassword(
+//         email: email,
+//         password: password,
+//       );
+//       state = AuthState(result.user);
+//     } on FirebaseAuthException catch (e) {
+//       throw AuthException(e.message ?? 'An error occurred during sign-up.');
+//     }
+//   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
-    state = AuthState(null);
-  }
-}
+//   Future<void> signIn(String email, String password) async {
+//     try {
+//       final result = await _auth.signInWithEmailAndPassword(
+//         email: email,
+//         password: password,
+//       );
+//       state = AuthState(result.user);
+//     } on FirebaseAuthException catch (e) {
+//       throw AuthException(e.message ?? 'An error occurred during sign-in.');
+//     }
+//   }
 
-class AuthException implements Exception {
-  final String message;
+//   Future<void> signOut() async {
+//     await _auth.signOut();
+//     state = AuthState(null);
+//   }
 
-  AuthException(this.message);
+//   Future<void> resetPassword({required String email}) async {
+//     await _auth.sendPasswordResetEmail(email: email);
+//   }
+// }
 
-  @override
-  String toString() {
-    return message;
-  }
-}
+// class AuthException implements Exception {
+//   final String message;
 
-//Providers
-final authStateNotifierProvider =
-    StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
-  return AuthStateNotifier();
-});
+//   AuthException(this.message);
 
-final userProvider = Provider<User?>((ref) {
-  final authState = ref.watch(authStateNotifierProvider);
-  return authState.user;
-});
+//   @override
+//   String toString() {
+//     return message;
+//   }
+// }
+
+// //Providers
+// final authStateNotifierProvider =
+//     StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
+//   return AuthStateNotifier();
+// });
+
+// final userProvider = Provider<User?>((ref) {
+//   final authState = ref.watch(authStateNotifierProvider);
+//   return authState.user;
+// });
+
+// final authStateProvider = StreamProvider((ref) async* {
+//   yield ref.read(authStateNotifierProvider.notifier).isUserSignedIn;
+// });

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/src/features/auth/data/auth_state.dart';
-import 'package:gidah/src/features/auth/presentation/screens/landing_screen.dart';
+import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
+import 'package:gidah/src/features/auth/presentation/screens/landing_screen.dart';
+import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
@@ -23,16 +25,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gidah',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: GoogleFonts.urbanist().fontFamily,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1AB65C)),
-        useMaterial3: true,
-      ),
-      home: const AuthChecker(),
-      //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+        title: 'Gidah',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: GoogleFonts.urbanist().fontFamily,
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1AB65C)),
+          useMaterial3: true,
+        ),
+        home: const AuthChecker()
+        //home: const ProfileDetails()
+        );
   }
 }
 
@@ -41,40 +43,20 @@ class AuthChecker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateNotifierProvider);
+    final authState = ref.watch(authStateProvider);
 
-    return authState.user == null ? const LandingScreen() : const HomePage();
-  }
-}
-
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    final userDetails = ref.read(userProvider);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-              onPressed: () {
-                ref
-                    .read(authStateNotifierProvider.notifier)
-                    .signOut()
-                    .then((value) => Navigator.of(context).pop());
-              },
-              icon: const Icon(Icons.logout))
-        ],
+    return authState.when(
+      data: (user) {
+        if (user != null) {
+          return const HomeScreen();
+        } else {
+          return const LoginScreen();
+        }
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
       ),
-      body: Center(
-        child: Text(userDetails!.email!),
-      ),
+      error: (e, trace) => const LandingScreen(),
     );
   }
 }
