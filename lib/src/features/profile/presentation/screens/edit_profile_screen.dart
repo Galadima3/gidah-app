@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:gidah/src/features/auth/data/firestore_repository.dart';
 import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
 

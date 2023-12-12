@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await auth.signInWithEmailAndPassword(email, password).then((value) {
       ref.read(loadingProvider.notifier).state = false;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
+        builder: (context) => HomeScreen(),
       ));
     }).onError((error, stackTrace) {
       log(error.toString());

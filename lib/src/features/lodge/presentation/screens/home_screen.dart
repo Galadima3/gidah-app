@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/lodge/data/house_service.dart';
+
+import 'package:gidah/src/features/lodge/domain/house_model.dart';
+import 'package:gidah/src/features/lodge/presentation/screens/house_detail_screen.dart';
 import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -14,14 +18,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomeScreen> {
   final searchController = TextEditingController();
-  final List<String> choices = ['Gandu', 'Bukan Koto', 'Akunza', 'Paradise'];
-  final List<String> houses = [
-    "https://images.unsplash.com/photo-1552189864-e05b02af1697?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHN0dWRlbnQlMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D",
-    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3R1ZGVudCUyMGhvdXNlfGVufDB8fDB8fHww",
-    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHN0dWRlbnQlMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D",
-    "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHN0dWRlbnQlMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D",
-    "https://images.unsplash.com/photo-1535186696008-7cba739a3103?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3R1ZGVudCUyMGhvdXNlfGVufDB8fDB8fHww"
+  final List<String> choices = [
+    'Gandu',
+    'Bukan Koto',
+    'Akunza',
   ];
+
   String selectedChoice = 'Gandu';
 
   void _onChipSelected(String choice) {
@@ -29,6 +31,8 @@ class _HomePageState extends ConsumerState<HomeScreen> {
       selectedChoice = choice;
     });
   }
+
+  //final HouseService _houseService = HouseService();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,6 @@ class _HomePageState extends ConsumerState<HomeScreen> {
           ),
           body: Column(
             children: [
-              //Hello
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 7, horizontal: 9.5),
@@ -115,8 +118,6 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
-
-              //choice chips
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 13.5),
@@ -139,132 +140,160 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-              //List of houses
-              SizedBox(
-                height: 275,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 150,
-                        width: 215,
-                        decoration: ShapeDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(houses[index]),
-                            fit: BoxFit.cover,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(41),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //Ratings
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 25.0, vertical: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    width: 53.5,
-                                    height: 25,
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFF1AB65C),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(26.50),
-                                      ),
-                                    ),
-                                    child: const Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            size: 18.5,
-                                            color: Colors.amber,
-                                          ),
-                                          Text(
-                                            "5.0",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
+              Consumer(
+                builder: (context, ref, child) {
+                  final houseData = ref.watch(houseProvider);
+                  return houseData.when(
+                    loading: () => const CircularProgressIndicator.adaptive(),
+                    error: (error, stackTrace) =>
+                        CustomScreen(input: Text(error.toString())),
+                    data: (houses) {
+                      List<HouseModel> selectedHouses = houses.where((house) {
+                        switch (selectedChoice) {
+                          case 'Gandu':
+                            return house.location.toLowerCase() == 'gandu';
+                          case 'Bukan Koto':
+                            return house.location.toLowerCase() == 'bukan koto';
+                          case 'Akunza':
+                            return house.location.toLowerCase() == 'akunza';
+                          default:
+                            return false;
+                        }
+                      }).toList();
+
+                      return SizedBox(
+                        height: 300,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: selectedHouses.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            HouseModel house = selectedHouses[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        HouseDetailScreen(houseDetails: house),
+                                  ));
+                                },
+                                child: HouseCard(
+                                  house: house,
+                                  isSelected: house.location.toLowerCase() ==
+                                      selectedChoice.toLowerCase(),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15.5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //name
-                                  const Text(
-                                    "Intercontinental L",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-
-                                  //Location
-                                  const Text(
-                                    "Gandu, Lafia",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-
-                                  //price & bookmark icon
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "#200,000",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.bookmark_outline,
-                                            color: Colors.white,
-                                          ))
-                                    ],
-                                  )
-
-                                  //
-                                ],
-                              ),
-                            )
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                    );
-                  },
-                ),
-              )
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         );
       },
-      error: (error, stackTrace) => CustomScreen(input: Text(error.toString())),
       loading: () => const CustomScreen(
         input: CircularProgressIndicator.adaptive(),
       ),
+      error: (error, stackTrace) => CustomScreen(
+        input: Text(error.toString()),
+      ),
+    );
+  }
+}
+
+class HouseCard extends StatelessWidget {
+  final HouseModel house;
+  final bool isSelected;
+
+  const HouseCard({
+    super.key,
+    required this.house,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 250,
+          width: 215,
+          decoration: ShapeDecoration(
+            image: DecorationImage(
+              image: NetworkImage(house.displayPicture),
+              fit: BoxFit.cover,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Ratings
+                Container(
+                  width: 53.5,
+                  height: 25,
+                  decoration: ShapeDecoration(
+                    color: isSelected ? const Color(0xFF1AB65C) : Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26.50),
+                    ),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          size: 18.5,
+                          color: Colors.amber,
+                        ),
+                        Text(
+                          "5.0",
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Bookmark
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.bookmark_border,
+                    color: isSelected ? Colors.white : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Column(
+          //crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Name
+            Text(
+              house.name,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16.5,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -287,3 +316,22 @@ class _CustomScreenState extends ConsumerState<CustomScreen> {
     );
   }
 }
+
+//Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//   children: [
+//     Text(
+//       "#200,000",
+//       style: TextStyle(
+//         color: isSelected ? Colors.black : Colors.white,
+//       ),
+//     ),
+//     IconButton(
+//       onPressed: () {},
+//       icon: Icon(
+//         Icons.bookmark_border,
+//         color: isSelected ? Colors.black : Colors.white,
+//       ),
+//     )
+//   ],
+// )

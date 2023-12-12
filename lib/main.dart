@@ -5,7 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:gidah/src/features/auth/presentation/screens/landing_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/bookmark/presentation/bookmark_screen.dart';
 import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
+import 'package:gidah/src/features/search/presentation/search_screen.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -48,7 +51,7 @@ class AuthChecker extends ConsumerWidget {
     return authState.when(
       data: (user) {
         if (user != null) {
-          return const HomeScreen();
+          return const BottomNavBar();
         } else {
           return const LoginScreen();
         }
@@ -57,6 +60,70 @@ class AuthChecker extends ConsumerWidget {
         child: CircularProgressIndicator(),
       ),
       error: (e, trace) => const LandingScreen(),
+    );
+  }
+}
+
+class BottomNavBar extends StatefulWidget {
+  const BottomNavBar({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _BottomNavBarState createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
+  int _selectedIndex = 0;
+
+  static const List<Widget> _pages = <Widget>[
+    HomeScreen(),
+    SearchScreen(),
+    BookmarkScreen(),
+    ProfileScreen()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: _pages.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Bookmarks',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.chat),
+          //   label: 'Chats',
+          // ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 5,
+      ),
     );
   }
 }

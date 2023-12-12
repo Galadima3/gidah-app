@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gidah/src/features/profile/domain/profile_model.dart';
 
 class ProfileFirestoreRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  //final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<ProfileModel?> getLoggedInUserData() async {

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/src/features/auth/presentation/screens/profile_details.dart';
+
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
 import 'package:gidah/src/features/profile/presentation/screens/edit_profile_screen.dart';
 
@@ -35,7 +35,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   void openPayment() {
     // Implement the action for 'Payment'
-    print('Opening payment');
+    log('Opening payment');
   }
 
   void showNotifications() {
@@ -45,17 +45,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   void showSecurity() {
     // Implement the action for 'Security'
-    print('Showing security');
+    log('Showing security');
   }
 
   void openHelp() {
     // Implement the action for 'Help'
-    print('Opening help');
+    log('Opening help');
   }
 
   void logout() {
     // Implement the action for 'Logout'
-    print('Logging out');
+    log('Logging out');
   }
 
   @override
