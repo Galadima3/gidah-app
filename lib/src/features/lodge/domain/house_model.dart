@@ -3,6 +3,7 @@ class HouseModel {
   final String location;
   final String address;
   final String rentPrice;
+  final double rating;
   final String displayPicture;
   final List<String> housePictures;
   final String description;
@@ -16,12 +17,14 @@ class HouseModel {
       required this.housePictures,
       required this.description,
       required this.facilities,
-      required this.rentPrice});
+      required this.rentPrice,
+      required this.rating});
 
   factory HouseModel.fromJson(Map<String, dynamic> json) => HouseModel(
         name: json.keys.first,
         location: json[json.keys.first]['location'],
         rentPrice: json[json.keys.first]['rentPrice'],
+        rating: json[json.keys.first]['rating'],
         address: json[json.keys.first]['address'],
         displayPicture: json[json.keys.first]['displayPicture'],
         housePictures:

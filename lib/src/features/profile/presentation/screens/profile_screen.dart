@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gidah/src/features/auth/data/auth_repository.dart';
+import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
 import 'package:gidah/src/features/profile/presentation/screens/edit_profile_screen.dart';
@@ -15,7 +17,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   late List<Map<String, dynamic>> settings;
-  bool _isDarkThemeEnabled = false;
+  late bool _isDarkThemeEnabled;
 
   void toggleDarkTheme() {
     setState(() {
@@ -53,9 +55,42 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     log('Opening help');
   }
 
-  void logout() {
-    // Implement the action for 'Logout'
+  void logout() async {
+    await showLogoutDialog(context);
     log('Logging out');
+  }
+
+  Future<void> showLogoutDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sure you want to log out?'),
+          content: const Text(
+              'This will clear your session and log you out of the app.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Log Out'),
+              onPressed: () async {
+                await _logOutLogic(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _logOutLogic(BuildContext context) async {
+    // Clear user data (e.g., shared preferences)
+    ref.read(authRepositoryProvider).signOut().then(
+        (value) => Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            )));
   }
 
   @override
@@ -91,6 +126,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       },
       {'title': 'Logout', 'icon': Icons.exit_to_app, 'action': () => logout()},
     ];
+    _isDarkThemeEnabled = false; // Initialize the state for the Dark Theme
   }
 
   @override
@@ -114,8 +150,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       backgroundColor: const Color(0xffFDCF09),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          data?.profileImage ?? "",
+                        child: Image(
+                          image: data?.profileImage == null
+                              ? const AssetImage('asset/images/default.png')
+                                  as ImageProvider<Object>
+                              : NetworkImage(data?.profileImage ?? ''),
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,

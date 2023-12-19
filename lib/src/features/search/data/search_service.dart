@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
 
-class HouseService {
+class SearchService {
   Future<List<HouseModel>> _loadHouses() async {
     try {
       final String jsonString =
@@ -25,24 +25,37 @@ class HouseService {
     }
   }
 
-  Future searchHouses(String searchQuery) async {
+  Future<List<HouseModel>> searchHouses(String searchQuery) async {
     try {
       final List<HouseModel> houses = await _loadHouses();
-      final lowercaseQuery = searchQuery.toLowerCase();
-      return houses
-          .where((house) => house.name.toLowerCase().contains(lowercaseQuery))
-          .toList();
+      final lowercaseQuery = searchQuery.toLowerCase().split(' ');
+
+      return houses.where((house) {
+        final lowercaseName = house.name.toLowerCase();
+        for (final word in lowercaseQuery) {
+          if (!lowercaseName.contains(word)) {
+            return false;
+          }
+        }
+        return true;
+      }).toList();
     } catch (e) {
       throw Exception("Error getting houses: $e");
     }
   }
 }
 
-final houseServiceProvider = Provider<HouseService>((ref) {
-  return HouseService();
+final searchServiceProvider = Provider<SearchService>((ref) {
+  return SearchService();
 });
 
-final houseProvider = FutureProvider<List<HouseModel>>((ref) async {
-  final houseService = ref.read(houseServiceProvider);
-  return await houseService.getHouses();
+// final houseProvider = FutureProvider<List<HouseModel>>((ref) async {
+//   final houseService = ref.read(houseServiceProvider);
+//   return await houseService.getHouses();
+// });
+
+final searchProvider =
+    FutureProvider.family<List<HouseModel>, String>((ref, searchQuery) async {
+  final searchService = ref.read(searchServiceProvider);
+  return await searchService.searchHouses(searchQuery);
 });

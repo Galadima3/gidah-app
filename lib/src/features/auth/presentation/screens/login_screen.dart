@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gidah/main.dart';
 
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 
 import 'package:gidah/src/features/auth/presentation/screens/password_reset.dart';
 import 'package:gidah/src/features/auth/presentation/screens/register_screen.dart';
-import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);
@@ -44,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
     await auth.signInWithEmailAndPassword(email, password).then((value) {
       ref.read(loadingProvider.notifier).state = false;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        // builder: (context) => const HomeScreen(),
+        builder: (context) => const BottomNavBar(),
       ));
     }).onError((error, stackTrace) {
       log(error.toString());

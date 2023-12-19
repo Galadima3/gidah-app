@@ -1,13 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gidah/main.dart';
 
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
-import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
 
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:email_validator/email_validator.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +32,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
   final phoneController = TextEditingController();
   final emailFormKey = GlobalKey<FormState>();
   final List<String> items = [
+    'Gender',
     'Male',
     'Female',
   ];
@@ -57,7 +57,8 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(ctx, MaterialPageRoute(
           builder: (context) {
-            return const HomeScreen();
+            // return const HomeScreen();
+            return const BottomNavBar();
           },
         ));
         ref.read(loadingProvider.notifier).state = false;

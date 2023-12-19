@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:gidah/src/features/auth/presentation/screens/landing_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/bookmark/data/bookmark_state_notifier.dart';
 import 'package:gidah/src/features/bookmark/presentation/bookmark_screen.dart';
 import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
 import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
@@ -95,20 +96,58 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: _pages.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
+            icon: Stack(
+              children: [
+                const Icon(
+                  Icons.bookmark,
+                  size: 30,
+                ),
+                Positioned(
+                  top: -2.5,
+                  right: -2.5,
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final bookmarkLength =
+                          ref.watch(bookmarksStateNotifierProvider);
+                      return Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                            color: Colors.red,
+                            //borderRadius: BorderRadius.circular(6),
+                            shape: BoxShape.circle),
+                        constraints: const BoxConstraints(
+                          minWidth: 10,
+                          minHeight: 10,
+                        ),
+                        child: Text(
+                          bookmarkLength.length
+                              .toString(), // Replace with the actual number of bookmarks
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
             label: 'Bookmarks',
           ),
-          BottomNavigationBarItem(
+
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),

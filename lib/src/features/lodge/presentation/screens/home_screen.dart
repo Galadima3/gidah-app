@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/src/features/auth/data/auth_repository.dart';
+
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
-import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:gidah/src/features/bookmark/data/bookmark_state_notifier.dart';
+
 import 'package:gidah/src/features/lodge/data/house_service.dart';
 
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userDetails = ref.watch(userInfoProvider);
+    final bookmark = ref.watch(bookmarksStateNotifierProvider);
     return userDetails.when(
       data: (data) {
         return Scaffold(
@@ -51,27 +53,18 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                   },
                 )),
                 child: CircleAvatar(
-                    radius: 5,
-                    backgroundImage: NetworkImage(
-                      data?.profileImage ?? '',
-                    )),
+                  radius: 5,
+                  backgroundImage: data?.profileImage == null
+                      ? const AssetImage('assets/images/default.png')
+                          as ImageProvider<Object>
+                      : NetworkImage(data!.profileImage),
+                ),
               ),
             ),
             actions: [
               IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.notifications_outlined)),
-              IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.bookmark_outline)),
-              IconButton(
-                onPressed: () {
-                  ref.read(authRepositoryProvider).signOut().then((value) =>
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      )));
-                },
-                icon: const Icon(Icons.logout),
-              ),
             ],
           ),
           body: Column(
@@ -140,30 +133,31 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-              Consumer(
-                builder: (context, ref, child) {
-                  final houseData = ref.watch(houseProvider);
-                  return houseData.when(
-                    loading: () => const CircularProgressIndicator.adaptive(),
-                    error: (error, stackTrace) =>
-                        CustomScreen(input: Text(error.toString())),
-                    data: (houses) {
-                      List<HouseModel> selectedHouses = houses.where((house) {
-                        switch (selectedChoice) {
-                          case 'Gandu':
-                            return house.location.toLowerCase() == 'gandu';
-                          case 'Bukan Koto':
-                            return house.location.toLowerCase() == 'bukan koto';
-                          case 'Akunza':
-                            return house.location.toLowerCase() == 'akunza';
-                          default:
-                            return false;
-                        }
-                      }).toList();
+              SizedBox(
+                height: 300,
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final houseData = ref.watch(houseProvider);
+                    return houseData.when(
+                      loading: () => const CircularProgressIndicator.adaptive(),
+                      error: (error, stackTrace) =>
+                          CustomScreen(input: Text(error.toString())),
+                      data: (houses) {
+                        List<HouseModel> selectedHouses = houses.where((house) {
+                          switch (selectedChoice) {
+                            case 'Gandu':
+                              return house.location.toLowerCase() == 'gandu';
+                            case 'Bukan Koto':
+                              return house.location.toLowerCase() ==
+                                  'bukan koto';
+                            case 'Akunza':
+                              return house.location.toLowerCase() == 'akunza';
+                            default:
+                              return false;
+                          }
+                        }).toList();
 
-                      return SizedBox(
-                        height: 300,
-                        child: ListView.builder(
+                        return ListView.builder(
                           shrinkWrap: true,
                           itemCount: selectedHouses.length,
                           scrollDirection: Axis.horizontal,
@@ -186,11 +180,11 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                               ),
                             );
                           },
-                        ),
-                      );
-                    },
-                  );
-                },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -206,7 +200,9 @@ class _HomePageState extends ConsumerState<HomeScreen> {
   }
 }
 
-class HouseCard extends StatelessWidget {
+final bookmarkStatusProvider = StateProvider<bool>((ref) => false);
+
+class HouseCard extends ConsumerWidget {
   final HouseModel house;
   final bool isSelected;
 
@@ -217,7 +213,7 @@ class HouseCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         Container(
@@ -258,7 +254,7 @@ class HouseCard extends StatelessWidget {
                           color: Colors.amber,
                         ),
                         Text(
-                          "5.0",
+                          house.rating.toString(),
                           style: TextStyle(
                             color: isSelected ? Colors.white : Colors.black,
                           ),
@@ -269,11 +265,23 @@ class HouseCard extends StatelessWidget {
                 ),
                 // Bookmark
                 IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.bookmark_border,
-                    color: isSelected ? Colors.white : Colors.black,
-                  ),
+                  onPressed: () {
+                    // Toggle bookmark status only for the current house
+                    ref
+                        .read(bookmarksStateNotifierProvider.notifier)
+                        .toggleBookmark(house);
+                  },
+                  icon: ref
+                          .read(bookmarksStateNotifierProvider.notifier)
+                          .isBookmarked(house)
+                      ? const Icon(
+                          Icons.bookmark_added,
+                          color: Colors.white,
+                        )
+                      : Icon(
+                          Icons.bookmark_border,
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
                 ),
               ],
             ),
@@ -316,22 +324,3 @@ class _CustomScreenState extends ConsumerState<CustomScreen> {
     );
   }
 }
-
-//Row(
-//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//   children: [
-//     Text(
-//       "#200,000",
-//       style: TextStyle(
-//         color: isSelected ? Colors.black : Colors.white,
-//       ),
-//     ),
-//     IconButton(
-//       onPressed: () {},
-//       icon: Icon(
-//         Icons.bookmark_border,
-//         color: isSelected ? Colors.black : Colors.white,
-//       ),
-//     )
-//   ],
-// )

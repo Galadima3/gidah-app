@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 final List<String> gandu = [
   "https://images.unsplash.com/photo-1552189864-e05b02af1697?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHN0dWRlbnQlMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D",
   "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3R1ZGVudCUyMGhvdXNlfGVufDB8fDB8fHww",
