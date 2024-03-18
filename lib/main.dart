@@ -106,44 +106,54 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Stack(
-              children: [
-                const Icon(
-                  Icons.bookmark,
-                  size: 30,
-                ),
-                Positioned(
-                  top: -2.5,
-                  right: -2.5,
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final bookmarkLength =
+            icon: Consumer(
+              builder: (context, ref, child) {
+                           final bookmarkLength =
                           ref.watch(bookmarksStateNotifierProvider);
-                      return Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                            color: Colors.red,
-                            //borderRadius: BorderRadius.circular(6),
-                            shape: BoxShape.circle),
-                        constraints: const BoxConstraints(
-                          minWidth: 10,
-                          minHeight: 10,
-                        ),
-                        child: Text(
-                          bookmarkLength.length
-                              .toString(), // Replace with the actual number of bookmarks
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                return Badge(
+                label: Text(bookmarkLength.length.toString()),
+                child: const Icon(Icons.bookmark),
+              );
+              },
+              
             ),
+            // icon: Stack(
+            //   children: [
+            //     const Icon(
+            //       Icons.bookmark,
+            //       size: 30,
+            //     ),
+            //     Positioned(
+            //       top: -2.5,
+            //       right: -2.5,
+            //       child: Consumer(
+            //         builder: (context, ref, child) {
+           
+            //           return Container(
+            //             padding: const EdgeInsets.all(6),
+            //             decoration: const BoxDecoration(
+            //                 color: Colors.red,
+            //                 //borderRadius: BorderRadius.circular(6),
+            //                 shape: BoxShape.circle),
+            //             constraints: const BoxConstraints(
+            //               minWidth: 10,
+            //               minHeight: 10,
+            //             ),
+            //             child: Text(
+            //               bookmarkLength.length
+            //                   .toString(), // Replace with the actual number of bookmarks
+            //               style: const TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 10,
+            //               ),
+            //               textAlign: TextAlign.center,
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ],
+            // ),
             label: 'Bookmarks',
           ),
 
