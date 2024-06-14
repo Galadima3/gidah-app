@@ -50,6 +50,7 @@ class DefaultFirebaseOptions {
     projectId: 'mylez-gidah-project',
     authDomain: 'mylez-gidah-project.firebaseapp.com',
     storageBucket: 'mylez-gidah-project.appspot.com',
+    measurementId: 'G-PPY3YR2JKC',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

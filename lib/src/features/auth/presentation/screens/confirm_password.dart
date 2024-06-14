@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_mail_app/open_mail_app.dart';
+// import 'package:open_mail_app/open_mail_app.dart';
 
 class ConfirmPasswordReset extends StatelessWidget {
   const ConfirmPasswordReset({super.key});
@@ -63,46 +63,46 @@ class ConfirmPasswordReset extends StatelessWidget {
           // ),
           GestureDetector(
             onTap: () async {
-              var result = await OpenMailApp.openMailApp();
+              // var result = await OpenMailApp.openMailApp();
 
-              // If no mail apps found, show error
-              if (!result.didOpen && !result.canOpen) {
-                //showNoMailAppsDialog(context);
-                void showNoMailAppsDialog(BuildContext context) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Open Mail App"),
-                        content: const Text("No mail apps installed"),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text("OK"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          )
-                        ],
-                      );
-                    },
-                  );
-                }
+              // // If no mail apps found, show error
+              // if (!result.didOpen && !result.canOpen) {
+              //   //showNoMailAppsDialog(context);
+              //   void showNoMailAppsDialog(BuildContext context) {
+              //     showDialog(
+              //       context: context,
+              //       builder: (context) {
+              //         return AlertDialog(
+              //           title: const Text("Open Mail App"),
+              //           content: const Text("No mail apps installed"),
+              //           actions: <Widget>[
+              //             TextButton(
+              //               child: const Text("OK"),
+              //               onPressed: () {
+              //                 Navigator.pop(context);
+              //               },
+              //             )
+              //           ],
+              //         );
+              //       },
+              //     );
+              //   }
 
-                // iOS: if multiple mail apps found, show dialog to select.
-                // There is no native intent/default app system in iOS so
-                // you have to do it yourself.
-              } else if (!result.didOpen && result.canOpen) {
-                void showMailDialog(BuildContext context) {
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return MailAppPickerDialog(
-                        mailApps: result.options,
-                      );
-                    },
-                  );
-                }
-              }
+              //   // iOS: if multiple mail apps found, show dialog to select.
+              //   // There is no native intent/default app system in iOS so
+              //   // you have to do it yourself.
+              // } else if (!result.didOpen && result.canOpen) {
+              //   void showMailDialog(BuildContext context) {
+              //     showDialog(
+              //       context: context,
+              //       builder: (_) {
+              //         return MailAppPickerDialog(
+              //           mailApps: result.options,
+              //         );
+              //       },
+              //     );
+              //   }
+              // }
             },
             child: Container(
               width: 328,

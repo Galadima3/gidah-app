@@ -7,9 +7,47 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:965002991981:android:bb6f29157bb73451bb2264",
+        "android_client_info": {
+          "package_name": "com.example.gida"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-gGGIekyO8f7_y0E6GLlpBXqBCPXQ504"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:965002991981:android:7eff87ea8f0c147bbb2264",
         "android_client_info": {
           "package_name": "com.example.gidah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-gGGIekyO8f7_y0E6GLlpBXqBCPXQ504"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965002991981:android:1d7cb80a3b5ff152bb2264",
+        "android_client_info": {
+          "package_name": "com.gidah.app"
         }
       },
       "oauth_client": [],
