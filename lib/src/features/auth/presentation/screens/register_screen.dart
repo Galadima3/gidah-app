@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gidah/src/constants/custom_snackbar.dart';
 
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/profile_details.dart';
+import 'package:gidah/src/features/auth/presentation/widgets/bottom_text_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);
@@ -26,23 +28,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailFormKey = GlobalKey<FormState>();
   final passwordFormKey = GlobalKey<FormState>();
   final confirmPasswordFormKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   bool isPasswordVisible = true;
   bool isPasswordVisible1 = true;
 
-  Future<void> signUpMethod(
-      String email, String password, WidgetRef ref) async {
-    ref.read(loadingProvider.notifier).state = true;
+  Future<void> signUpMethod(String email, String password, WidgetRef ref,
+      BuildContext context) async {
+    ref.read(loadingProvider.notifier).update((state) => true);
     final auth = ref.read(authRepositoryProvider);
-    await auth.signUp(email, password).then((value) {
-      ref.read(loadingProvider.notifier).state = false;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const ProfileDetails(),
-      ));
-    }).onError((error, stackTrace) {
-      log(error.toString());
-      ref.read(loadingProvider.notifier).state = false;
-    });
+    try {
+      await auth.signUp(email, password);
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const ProfileDetails()),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        customSnackBar(context, error.toString()),
+      );
+    } finally {
+      ref.read(loadingProvider.notifier).update((state) => false);
+    }
   }
 
   @override
@@ -179,8 +193,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (emailFormKey.currentState!.validate() &&
                         passwordFormKey.currentState!.validate() &&
                         confirmPasswordFormKey.currentState!.validate()) {
-                      signUpMethod(
-                          emailController.text, passwordController.text, ref);
+                      signUpMethod(emailController.text,
+                          passwordController.text, ref, context);
                     }
                   },
                   child: Container(
@@ -226,42 +240,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
               height: 15,
             ),
             //text
-            Padding(
-              padding: const EdgeInsets.only(right: 13.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Already have an account? ',
-                    style: GoogleFonts.urbanist(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    )),
-                    child: Text(
-                      'Sign In ',
-                      style: GoogleFonts.urbanist(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blue),
-                    ),
-                  )
-                ],
-              ),
+            BottomTextWidget(
+              text1: 'Already have an account? ',
+              text2: 'Sign In ',
+              reqFunction: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              )),
             )
           ],
         ),
       ),
     );
   }
-}
-
-extension CustomError on BuildContext {
-  void showSnackbar(String message) => ScaffoldMessenger.of(this).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
 }

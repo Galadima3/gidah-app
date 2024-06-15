@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
-import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:gidah/src/features/search/data/search_service.dart';
+
 
 class SearchResultScreen extends StatefulWidget {
   final String searchTerm;

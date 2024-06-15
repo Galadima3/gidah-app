@@ -12,9 +12,7 @@ class AuthRepository {
   Stream<User?> get authStateChange => _auth.idTokenChanges();
 
   Future<User?> signInWithEmailAndPassword(
-      //sign in method
-      String email,
-      String password) async {
+      String email, String password) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -23,14 +21,18 @@ class AuthRepository {
       log('Sign in successful');
       return result.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw AuthException('User not found');
-      } else if (e.code == 'wrong-password') {
-        throw AuthException('Wrong password');
-      } else {
-        log(e.message ?? 'No error occured');
-        throw AuthException('An error occured. Please try again later');
-      }
+      final errorMessages = {
+        'user-not-found': 'User not found',
+        'wrong-password': 'Wrong password',
+        'invalid-credential': 'Check your email/password and try again',
+      };
+      final errorMessage =
+          errorMessages[e.code] ?? e.message ?? 'An unknown error occurred';
+      log(errorMessage);
+      throw AuthException(errorMessage);
+    } catch (e) {
+      log('An unexpected error occurred: $e');
+      throw AuthException('An unexpected error occurred');
     }
   }
 
@@ -41,7 +43,13 @@ class AuthRepository {
       log('Sign up successful');
       return result.user;
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+      final errorMessages = {
+        'email-in-use': 'Email already in use',
+      };
+      final errorMessage =
+          errorMessages[e.code] ?? e.message ?? 'An unknown error occurred';
+      log(errorMessage);
+      throw AuthException(errorMessage);
     }
   }
 

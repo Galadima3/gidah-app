@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
+import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

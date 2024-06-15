@@ -1,34 +1,31 @@
-import 'dart:developer';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/main.dart';
-
+import 'package:gidah/src/constants/custom_snackbar.dart';
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
-
 import 'package:gidah/src/features/auth/presentation/screens/password_reset.dart';
 import 'package:gidah/src/features/auth/presentation/screens/register_screen.dart';
-
+import 'package:gidah/src/features/auth/presentation/widgets/bottom_navigation_bar.dart';
+import 'package:gidah/src/features/auth/presentation/widgets/bottom_text_widget.dart';
+import 'package:gidah/src/features/auth/presentation/widgets/custom_text_formfield.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final loadingProvider = StateProvider<bool>((ref) => false);
 
-class LoginScreen extends StatefulWidget {
+final loadingProvider = StateProvider<bool>((ref) => false);
+final passwordVisibilityProvider = StateProvider<bool>((ref) => true);
+
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final emailFormKey = GlobalKey<FormState>();
-  final passwordFormKey = GlobalKey<FormState>();
-
-  bool isPasswordVisible = true;
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -40,140 +37,107 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signInMethod(
       String email, String password, WidgetRef ref) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    ref.read(loadingProvider.notifier).state = true;
+    ref.read(loadingProvider.notifier).update((state) => true);
     final auth = ref.read(authRepositoryProvider);
-    await auth.signInWithEmailAndPassword(email, password).then((value) {
-      ref.read(loadingProvider.notifier).state = false;
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      if (!mounted) return; 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        // builder: (context) => const HomeScreen(),
         builder: (context) => const BottomNavBar(),
       ));
-    }).onError((error, stackTrace) {
-      log(error.toString());
-      ref.read(loadingProvider.notifier).state = false;
-    });
+    } catch (error, _) {
+      if (!mounted) return; 
+      ScaffoldMessenger.of(context).showSnackBar(
+        customSnackBar(context, error.toString()),
+      );
+    } finally {
+      ref.read(loadingProvider.notifier).update((state) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    //print(height);
+    final isLoading = ref.watch(loadingProvider);
+    final isPasswordVisible = ref.watch(passwordVisibilityProvider);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            //text
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(
-                'Login to your Account',
-                style: GoogleFonts.urbanist(
-                  fontSize: 39,
-                  fontWeight: FontWeight.w700,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  'Login to your Account',
+                  style: GoogleFonts.urbanist(
+                    fontSize: 39,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-            ),
-
-            SizedBox(
-              height: height * 0.045,
-            ),
-
-            //email
-            Form(
-              key: emailFormKey,
-              child: Padding(
+              SizedBox(height: height * 0.045),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CustomTextFormField(
                   controller: emailController,
+                  hintText: 'Email',
+                  prefixIcon: Icons.email_outlined,
                   validator: (value) => EmailValidator.validate(value!)
                       ? null
                       : "Please enter a valid email",
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: height * 0.035,
-            ),
-            //password
-            Form(
-              key: passwordFormKey,
-              child: Padding(
+              SizedBox(height: height * 0.035),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  obscureText: isPasswordVisible,
+                child: CustomTextFormField(
                   controller: passwordController,
-                  keyboardType: TextInputType.visiblePassword,
+                  hintText: 'Password',
+                  prefixIcon: Icons.password,
+                  obscureText: isPasswordVisible,
                   validator: (value) => value!.length > 6
                       ? null
                       : "Password should be more than 6 characters",
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    prefixIcon: const Icon(Icons.password),
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                        icon: Icon(isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  suffixIcon: IconButton(
+                    onPressed: () => ref
+                        .read(passwordVisibilityProvider.notifier)
+                        .update((state) => !state),
+                    icon: Icon(
+                      isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                   ),
                 ),
               ),
-            ),
-
-            //checkbox
-            InkWell(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) {
-                  return const ResetPasswordScreen();
-                },
-              )),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Forgot Password?',
-                      style: GoogleFonts.urbanist(
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
+              InkWell(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ResetPasswordScreen(),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 8.5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('Forgot Password?',
+                          style: GoogleFonts.urbanist(fontSize: 14)),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: height * 0.025,
-            ),
-
-            //button
-            Consumer(builder: (context, ref, child) {
-              final isLoading = ref.watch(loadingProvider);
-              return InkWell(
+              SizedBox(height: height * 0.025),
+              InkWell(
                 onTap: () {
-                  if (emailFormKey.currentState!.validate() &&
-                      passwordFormKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     signInMethod(
                         emailController.text, passwordController.text, ref);
                   }
@@ -192,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         blurRadius: 5,
                         offset: Offset(0, 4),
                         spreadRadius: 0,
-                      )
+                      ),
                     ],
                   ),
                   child: Center(
@@ -213,43 +177,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                   ),
                 ),
-              );
-            }),
-
-            const SizedBox(
-              height: 15,
-            ),
-            //text
-            Padding(
-              padding: const EdgeInsets.only(right: 13.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Don\'t have an account? ',
-                    style: GoogleFonts.urbanist(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return const RegisterScreen();
-                      },
-                    )),
-                    child: Text(
-                      'Sign up',
-                      style: GoogleFonts.urbanist(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blue),
-                    ),
-                  )
-                ],
               ),
-            )
-          ],
+              const SizedBox(height: 15),
+              BottomTextWidget(
+                text1: 'Don\'t have an account? ',
+                text2: 'Sign up',
+                reqFunction: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

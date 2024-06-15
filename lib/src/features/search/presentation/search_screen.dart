@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
-import 'package:gidah/src/features/lodge/presentation/screens/home_screen.dart';
+
 import 'package:gidah/src/features/lodge/presentation/screens/house_detail_screen.dart';
+import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:gidah/src/features/search/data/search_service.dart';
 import 'package:gidah/src/features/search/presentation/search_result_screen.dart';
 

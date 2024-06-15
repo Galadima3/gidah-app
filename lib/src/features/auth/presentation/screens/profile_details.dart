@@ -1,9 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gidah/main.dart';
+
 
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
+import 'package:gidah/src/features/auth/presentation/widgets/bottom_navigation_bar.dart';
 
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
