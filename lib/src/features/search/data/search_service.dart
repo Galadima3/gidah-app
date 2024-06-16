@@ -49,13 +49,8 @@ final searchServiceProvider = Provider<SearchService>((ref) {
   return SearchService();
 });
 
-// final houseProvider = FutureProvider<List<HouseModel>>((ref) async {
-//   final houseService = ref.read(houseServiceProvider);
-//   return await houseService.getHouses();
-// });
-
 final searchProvider =
-    FutureProvider.family<List<HouseModel>, String>((ref, searchQuery) async {
+    FutureProvider.autoDispose.family<List<HouseModel>, String>((ref, searchQuery) async {
   final searchService = ref.read(searchServiceProvider);
   return await searchService.searchHouses(searchQuery);
 });

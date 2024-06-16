@@ -1,19 +1,13 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
-
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
 import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
-
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);

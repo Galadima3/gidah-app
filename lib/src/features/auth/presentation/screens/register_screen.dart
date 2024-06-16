@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gidah/src/constants/custom_snackbar.dart';
-
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
-
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/profile_details.dart';
 import 'package:gidah/src/features/auth/presentation/widgets/bottom_text_widget.dart';
