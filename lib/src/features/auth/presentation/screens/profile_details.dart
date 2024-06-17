@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gidah/src/constants/fancy_green_button.dart';
+import 'package:gidah/src/constants/image_picker_service.dart';
 
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
 import 'package:gidah/src/features/auth/presentation/widgets/bottom_navigation_bar.dart';
@@ -12,10 +14,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 
 final loadingProvider = StateProvider<bool>((ref) => false);
+final imageProvider = StateProvider<File?>((ref) => null);
 
 class ProfileDetails extends ConsumerStatefulWidget {
   const ProfileDetails({
@@ -85,42 +88,15 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   File? _selectedImage;
-  final ImagePicker _picker = ImagePicker();
-
-  Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-      //uploadFile();
-    } else {
-      log('No image selected.');
-    }
-  }
-
-  Future imgFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-      //uploadFile();
-    } else {
-      log('No image selected.');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Fill your Profile',
-          style: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.5.sp, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -132,7 +108,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 _showPicker(context);
               },
               child: CircleAvatar(
-                radius: 55,
+                radius: 55.r,
                 backgroundColor: const Color(0xffFDCF09),
                 child: _selectedImage != null
                     ? ClipRRect(
@@ -148,8 +124,8 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                         decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(50)),
-                        width: 100,
-                        height: 100,
+                        width: 100.w,
+                        height: 100.h,
                         child: Icon(
                           Icons.add_a_photo,
                           color: Colors.grey[800],
@@ -158,7 +134,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
               ),
             ),
 
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
 
             //full name
             Padding(
@@ -175,7 +151,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+             SizedBox(height: 15.h),
 
             //date of birth
             Padding(
@@ -211,32 +187,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                     } else {}
                   }),
             ),
-            const SizedBox(height: 15),
-
-            //TODO: Note
-            //email
-            // Form(
-            //   key: emailFormKey,
-            //   child: Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            //     child: TextFormField(
-            //       autovalidateMode: AutovalidateMode.onUserInteraction,
-            //       controller: emailController,
-            //       validator: (value) => EmailValidator.validate(value!)
-            //           ? null
-            //           : "Please enter a valid email",
-            //       keyboardType: TextInputType.emailAddress,
-            //       decoration: InputDecoration(
-            //         hintText: 'Email',
-            //         prefixIcon: const Icon(Icons.email_outlined),
-            //         border: OutlineInputBorder(
-            //           borderRadius: BorderRadius.circular(12),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
 
             //phone number
             Padding(
@@ -259,7 +210,7 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
             ),
 
             SizedBox(
-              width: 275,
+              width: 275.w,
               child: DropdownButton<String>(
                 isExpanded: true,
                 borderRadius: BorderRadius.circular(12),
@@ -278,45 +229,29 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 }).toList(),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
             Consumer(builder: (context, ref, child) {
               final isLoading = ref.watch(loadingProvider);
               return InkWell(
-                  onTap: () => onSubmit(context),
-                  child: Container(
-                      width: 328,
-                      height: 53,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFF1AB65C),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(26.50),
+                onTap: () => onSubmit(context),
+                child: FancyGreenButton(
+                  inputWidget: isLoading
+                      ? Transform.scale(
+                          scale: 0.65,
+                          child: const CircularProgressIndicator.adaptive(
+                            backgroundColor: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'Proceed',
+                          style: TextStyle(
+                            fontSize: 15.5.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                        shadows: const [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 5,
-                            offset: Offset(0, 4),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      child: Center(
-                        child: isLoading
-                            ? Transform.scale(
-                                scale: 0.65,
-                                child: const CircularProgressIndicator.adaptive(
-                                  backgroundColor: Colors.white,
-                                ),
-                              )
-                            : const Text(
-                                'Proceed',
-                                style: TextStyle(
-                                  fontSize: 15.5,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      )));
+                ),
+              );
             })
           ],
         ),
@@ -339,15 +274,27 @@ class _ProfileDetailsState extends ConsumerState<ProfileDetails> {
                 ListTile(
                     leading: const Icon(Icons.photo_library),
                     title: const Text('Gallery'),
-                    onTap: () {
-                      imgFromGallery();
+                    onTap: () async {
+                      // imgFromGallery();
+                      final galleryImage = await ref
+                          .read(imageServiceProvider)
+                          .pickImageFromGallery();
+                      setState(() {
+                        _selectedImage = galleryImage;
+                      });
+
                       Navigator.of(context).pop();
                     }),
                 ListTile(
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('Camera'),
-                  onTap: () {
-                    imgFromCamera();
+                  onTap: () async {
+                    final cameraImage = await ref
+                        .read(imageServiceProvider)
+                        .pickImageFromCamera();
+                    setState(() {
+                      _selectedImage = cameraImage;
+                    });
                     Navigator.of(context).pop();
                   },
                 ),

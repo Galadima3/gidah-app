@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
 import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:gidah/src/features/search/data/search_service.dart';
-
 
 class SearchResultScreen extends StatefulWidget {
   final String searchTerm;
@@ -45,11 +45,11 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: 90,
-                      width: 325,
+                      height: 90.h,
+                      width: 325.w,
                       decoration: BoxDecoration(
                           color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(12.r)),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
@@ -57,20 +57,16 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                             CircleAvatar(
                               backgroundImage: NetworkImage(
                                   snapshot.data![0].displayPicture),
-                              radius: 35,
+                              radius: 35.r,
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
+                            SizedBox(width: 10.w),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 18.0),
                               child: Column(
                                 children: [
                                   Text(snapshot.data![0].name),
-                                  const SizedBox(
-                                    height: 6.5,
-                                  ),
+                                  SizedBox(height: 6.5.h),
                                   Text(snapshot.data![0].address),
                                 ],
                               ),

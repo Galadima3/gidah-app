@@ -1,5 +1,8 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gidah/src/constants/fancy_green_button.dart';
+import 'package:gidah/src/features/auth/presentation/widgets/custom_text_formfield.dart';
 import 'package:gidah/src/features/profile/data/profile_repository.dart';
 import 'package:gidah/src/features/profile/presentation/screens/profile_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -54,13 +57,6 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                       content: Text('Data Updated successfully')),
                 ))
             .then((value) => ref.read(loadingProvider.notifier).state = false);
-
-        // // ignore: use_build_context_synchronously
-        // Navigator.pushReplacement(ctx, MaterialPageRoute(
-        //   builder: (context) {
-        //     return const HomeScreen();
-        //   },
-        // ));
       } else {
         ref.read(loadingProvider.notifier).state = false;
         log('No authenticated user found.');
@@ -99,9 +95,9 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: const Text(
+          title: Text(
             'Edit Profile',
-            style: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18.5.sp, fontWeight: FontWeight.bold),
           ),
         ),
         body: editInfo.when(
@@ -131,7 +127,7 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15.h),
 
                     //date of birth
                     Padding(
@@ -145,7 +141,7 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                             //icon of text field
                             labelText: "Date of Birth",
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                             ), //label text of field
                           ),
                           readOnly: true, // when true user cannot edit text
@@ -168,32 +164,25 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                             } else {}
                           }),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15.h),
 
-                    //TODO: Note
                     //email
                     Form(
                       key: emailFormKey,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                        child: CustomTextFormField(
                           controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: 'Email',
+                          prefixIcon: Icons.email_outlined,
                           validator: (value) => EmailValidator.validate(value!)
                               ? null
                               : "Please enter a valid email",
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: 'Email',
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15.h),
 
                     //phone number
                     Padding(
@@ -217,7 +206,7 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                     ),
 
                     SizedBox(
-                      width: 275,
+                      width: 275.w,
                       child: DropdownButton<String>(
                         isExpanded: true,
                         borderRadius: BorderRadius.circular(12),
@@ -236,46 +225,30 @@ class _ProfileDetailsState extends ConsumerState<EditProfileScreen> {
                         }).toList(),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15.h),
                     Consumer(builder: (context, ref, child) {
                       final isLoading = ref.watch(loadingProvider);
                       return InkWell(
-                          onTap: () => onSubmit(context),
-                          child: Container(
-                              width: 328,
-                              height: 53,
-                              decoration: ShapeDecoration(
-                                color: const Color(0xFF1AB65C),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(26.50),
+                        onTap: () => onSubmit(context),
+                        child: FancyGreenButton(
+                          inputWidget: isLoading
+                              ? Transform.scale(
+                                  scale: 0.65,
+                                  child:
+                                      const CircularProgressIndicator.adaptive(
+                                    backgroundColor: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Update',
+                                  style: TextStyle(
+                                    fontSize: 15.5.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 5,
-                                    offset: Offset(0, 4),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: Center(
-                                child: isLoading
-                                    ? Transform.scale(
-                                        scale: 0.65,
-                                        child: const CircularProgressIndicator
-                                            .adaptive(
-                                          backgroundColor: Colors.white,
-                                        ),
-                                      )
-                                    : const Text(
-                                        'Update',
-                                        style: TextStyle(
-                                          fontSize: 15.5,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                              )));
+                        ),
+                      );
                     })
                   ],
                 ),

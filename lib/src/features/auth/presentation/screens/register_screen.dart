@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/constants/custom_snackbar.dart';
+import 'package:gidah/src/constants/fancy_green_button.dart';
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/profile_details.dart';
@@ -58,8 +60,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-
-    //print(height);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -73,14 +73,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Text(
                 'Create your account',
                 style: GoogleFonts.urbanist(
-                  fontSize: 39,
+                  fontSize: 39.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
 
             SizedBox(
-              height: height * 0.045,
+              height: height * 0.045.h,
             ),
 
             //email
@@ -106,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             SizedBox(
-              height: height * 0.025,
+              height: height * 0.025.h,
             ),
             //password
             Form(
@@ -134,14 +134,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? Icons.visibility_off
                             : Icons.visibility)),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
               ),
             ),
             SizedBox(
-              height: height * 0.025,
+              height: height * 0.025.h,
             ),
 
             //confirm password
@@ -170,14 +170,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? Icons.visibility_off
                             : Icons.visibility)),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
               ),
             ),
             SizedBox(
-              height: height * 0.025,
+              height: height * 0.025.h,
             ),
 
             //button
@@ -185,33 +185,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
               builder: (context, ref, child) {
                 final isLoading = ref.watch(loadingProvider);
                 return GestureDetector(
-                  onTap: () {
-                    if (emailFormKey.currentState!.validate() &&
-                        passwordFormKey.currentState!.validate() &&
-                        confirmPasswordFormKey.currentState!.validate()) {
-                      signUpMethod(emailController.text,
-                          passwordController.text, ref, context);
-                    }
-                  },
-                  child: Container(
-                    width: 328,
-                    height: 53,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFF1AB65C),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26.50),
-                      ),
-                      shadows: const [
-                        BoxShadow(
-                          color: Color(0x3F000000),
-                          blurRadius: 5,
-                          offset: Offset(0, 4),
-                          spreadRadius: 0,
-                        )
-                      ],
-                    ),
-                    child: Center(
-                      child: isLoading
+                    onTap: () {
+                      if (emailFormKey.currentState!.validate() &&
+                          passwordFormKey.currentState!.validate() &&
+                          confirmPasswordFormKey.currentState!.validate()) {
+                        signUpMethod(emailController.text,
+                            passwordController.text, ref, context);
+                      }
+                    },
+                    child: FancyGreenButton(
+                      inputWidget: isLoading
                           ? Transform.scale(
                               scale: 0.65,
                               child: const CircularProgressIndicator.adaptive(
@@ -221,19 +204,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : Text(
                               'Sign up',
                               style: GoogleFonts.urbanist(
-                                fontSize: 17,
+                                fontSize: 17.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                    ),
-                  ),
-                );
+                    ));
               },
             ),
-
-            const SizedBox(
-              height: 15,
+            SizedBox(
+              height: 15.h,
             ),
             //text
             BottomTextWidget(

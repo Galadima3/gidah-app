@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
 
 class HouseDetailScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 borderRadius: BorderRadius.circular(12),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 235,
+                  height: 235.h,
                   child: Image.network(
                     widget.houseDetails.displayPicture,
                     fit: BoxFit
@@ -58,9 +59,9 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             Text(
               widget.houseDetails.name,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black,
-                fontSize: 20.5,
+                fontSize: 20.5.sp,
                 fontFamily: 'Urbanist',
                 fontWeight: FontWeight.w700,
               ),
@@ -76,21 +77,21 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 ),
                 Text(
                   widget.houseDetails.address,
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: TextStyle(
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: Row(
                 children: [
                   Text(
                     'Gallery Photos',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 19,
+                      fontSize: 19.sp,
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w700,
                     ),
@@ -100,7 +101,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             ),
 
             SizedBox(
-              height: 150,
+              height: 150.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.houseDetails.housePictures.length,
@@ -108,13 +109,13 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: 70,
-                      width: 150,
+                      height: 70.h,
+                      width: 150.w,
                       decoration: BoxDecoration(
                           color: Colors.black,
-                          borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(12.r)),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         child: Image.network(
                           widget.houseDetails.housePictures[index],
                           fit: BoxFit
@@ -126,15 +127,15 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 },
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: Row(
                 children: [
                   Text(
                     'Facilities',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 19,
+                      fontSize: 19.sp,
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w700,
                     ),
@@ -144,7 +145,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
             ),
 
             SizedBox(
-              height: 60,
+              height: 60.h,
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -153,8 +154,6 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                 itemBuilder: (context, index) {
                   final facilityName =
                       widget.houseDetails.facilities.keys.elementAt(index);
-                  // final facilityData =
-                  //     widget.houseDetails.facilities[facilityName];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -163,7 +162,7 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
                           getIcon(facilityName),
                           color: Colors.black,
                         ),
-                        const SizedBox(width: 12.0),
+                        SizedBox(width: 12.0.w),
                         Text(facilityName),
                       ],
                     ),
@@ -177,9 +176,10 @@ class _HouseDetailScreenState extends State<HouseDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("${widget.houseDetails.rentPrice}/year"),
-                const SizedBox(
-                  width: 10,
+                Text("₦${widget.houseDetails.rentPrice}/year"),
+                
+                SizedBox(
+                  width: 10.w,
                 ),
                 ElevatedButton(
                   onPressed: () {},

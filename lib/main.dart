@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-import 'package:gidah/src/features/auth/presentation/screens/landing_screen.dart';
-import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
-import 'package:gidah/src/features/auth/presentation/widgets/bottom_navigation_bar.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gidah/src/features/auth/presentation/controllers/auth_checker.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,13 +15,22 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+//TODO:
+// Responsive Design
+// Sort Image Picker Integration
+// Add Internet Connectivity
+// Tests??
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      builder: (_, child) => MaterialApp(
         title: 'Gidah',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -33,32 +38,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1AB65C)),
           useMaterial3: true,
         ),
-        home: const AuthChecker()
-        //home: const ProfileDetails()
-        );
-  }
-}
-
-class AuthChecker extends ConsumerWidget {
-  const AuthChecker({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-
-    return authState.when(
-      data: (user) {
-        if (user != null) {
-          return const BottomNavBar();
-        } else {
-          return const LoginScreen();
-        }
-      },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+        home: const AuthChecker(),
       ),
-      error: (e, trace) => const LandingScreen(),
     );
   }
 }
-

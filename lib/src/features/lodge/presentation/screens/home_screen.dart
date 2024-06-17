@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/auth/data/firestore_repository.dart';
 import 'package:gidah/src/features/lodge/data/house_service.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
@@ -49,7 +50,7 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                   },
                 )),
                 child: CircleAvatar(
-                  radius: 5,
+                  radius: 5.r,
                   backgroundImage: data?.profileImage == null
                       ? const AssetImage('assets/images/default.png')
                           as ImageProvider<Object>
@@ -71,21 +72,13 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    data?.fullName == null
-                        ? const Text(
-                            'Hello, Unknown',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )
-                        : Text(
-                            'Hello, ${data!.fullName}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                    Text(
+                      'Hello, ${data?.fullName == null ? "Unknown" : data!.fullName}',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -102,7 +95,7 @@ class _HomePageState extends ConsumerState<HomeScreen> {
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: const Icon(Icons.tune),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
@@ -130,7 +123,7 @@ class _HomePageState extends ConsumerState<HomeScreen> {
               ),
 
               SizedBox(
-                height: 300,
+                height: 300.h,
                 child: Consumer(
                   builder: (context, ref, child) {
                     final houseData = ref.watch(houseProvider);
@@ -195,7 +188,3 @@ class _HomePageState extends ConsumerState<HomeScreen> {
     );
   }
 }
-
-
-
-

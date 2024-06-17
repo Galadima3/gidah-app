@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/bookmark/data/bookmark_state_notifier.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
 
@@ -18,15 +19,15 @@ class HouseCard extends ConsumerWidget {
     return Column(
       children: [
         Container(
-          height: 250,
-          width: 215,
+          height: 250.h,
+          width: 215.w,
           decoration: ShapeDecoration(
             image: DecorationImage(
               image: NetworkImage(house.displayPicture),
               fit: BoxFit.cover,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
             ),
           ),
           child: Padding(
@@ -37,12 +38,12 @@ class HouseCard extends ConsumerWidget {
               children: [
                 // Ratings
                 Container(
-                  width: 53.5,
-                  height: 25,
+                  width: 53.5.w,
+                  height: 25.h,
                   decoration: ShapeDecoration(
                     color: isSelected ? const Color(0xFF1AB65C) : Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(26.50),
+                      borderRadius: BorderRadius.circular(26.50.r),
                     ),
                   ),
                   child: Center(
@@ -94,9 +95,9 @@ class HouseCard extends ConsumerWidget {
             // Name
             Text(
               house.name,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.black,
-                fontSize: 16.5,
+                fontSize: 16.5.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),

@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/constants/custom_snackbar.dart';
+import 'package:gidah/src/constants/fancy_green_button.dart';
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:gidah/src/features/auth/presentation/screens/password_reset.dart';
 import 'package:gidah/src/features/auth/presentation/screens/register_screen.dart';
@@ -9,7 +11,6 @@ import 'package:gidah/src/features/auth/presentation/widgets/bottom_navigation_b
 import 'package:gidah/src/features/auth/presentation/widgets/bottom_text_widget.dart';
 import 'package:gidah/src/features/auth/presentation/widgets/custom_text_formfield.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 final loadingProvider = StateProvider<bool>((ref) => false);
 final passwordVisibilityProvider = StateProvider<bool>((ref) => true);
@@ -41,12 +42,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final auth = ref.read(authRepositoryProvider);
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      if (!mounted) return; 
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const BottomNavBar(),
       ));
     } catch (error, _) {
-      if (!mounted) return; 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackBar(context, error.toString()),
       );
@@ -75,12 +76,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Text(
                   'Login to your Account',
                   style: GoogleFonts.urbanist(
-                    fontSize: 39,
+                    fontSize: 39.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              SizedBox(height: height * 0.045),
+              SizedBox(height: height * 0.045.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: CustomTextFormField(
@@ -93,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
-              SizedBox(height: height * 0.035),
+              SizedBox(height: height * 0.035.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: CustomTextFormField(
@@ -129,38 +130,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text('Forgot Password?',
-                          style: GoogleFonts.urbanist(fontSize: 14)),
+                          style: GoogleFonts.urbanist(fontSize: 14.sp)),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: height * 0.025),
+              SizedBox(height: height * 0.025.h),
               InkWell(
-                onTap: () {
-                  if (formKey.currentState!.validate()) {
-                    signInMethod(
-                        emailController.text, passwordController.text, ref);
-                  }
-                },
-                child: Container(
-                  width: 328,
-                  height: 53,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF1AB65C),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(26.50),
-                    ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 5,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: isLoading
+                  onTap: () {
+                    if (formKey.currentState!.validate()) {
+                      signInMethod(
+                          emailController.text, passwordController.text, ref);
+                    }
+                  },
+                  child: FancyGreenButton(
+                    inputWidget: isLoading
                         ? Transform.scale(
                             scale: 0.65,
                             child: const CircularProgressIndicator.adaptive(
@@ -170,15 +154,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         : Text(
                             'Sign In',
                             style: GoogleFonts.urbanist(
-                              fontSize: 17,
+                              fontSize: 17.sp,
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
+                  )),
+              SizedBox(height: 15.h),
               BottomTextWidget(
                 text1: 'Don\'t have an account? ',
                 text2: 'Sign up',

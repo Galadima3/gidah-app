@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gidah/src/constants/fancy_green_button.dart';
+import 'package:gidah/src/features/auth/presentation/screens/confirm_password.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 import 'package:gidah/src/features/auth/presentation/screens/register_screen.dart';
 
@@ -15,11 +18,11 @@ class LandingScreen extends StatelessWidget {
           //Logo
           SvgPicture.asset(
             'asset/images/flutter.svg',
-            height: 150,
-            width: 250,
+            height: 150.h,
+            width: 250.w,
           ),
-          const SizedBox(
-            height: 35,
+          SizedBox(
+            height: 35.h,
           ),
 
           Center(
@@ -27,53 +30,22 @@ class LandingScreen extends StatelessWidget {
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const RegisterScreen(),
               )),
-              child: Container(
-                height: 50,
-                width: 285,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFF1AB65C),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(26.50),
-                  ),
-                  shadows: const [
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 5,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
+              child: const FancyGreenButton(inputWidget: Text(
                     'Create an account ',
                     style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+                  ), isLandingScreen: true,)
             ),
           ),
-          const SizedBox(
-            height: 25,
+          SizedBox(
+            height: 25.h,
           ),
-          // Center(
-          //   child: Container(
-          //     height: 50,
-          //     width: 285,
-          //     decoration: BoxDecoration(
-          //         color: Colors.white70,
-          //         borderRadius: BorderRadius.circular(12)),
-          //     child: const Center(
-          //       child: Text('Log in to an existing account '),
-          //     ),
-          //   ),
-          // ),
+          
           GestureDetector(
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const LoginScreen(),
             )),
             child: Container(
-                width: 285,
+                width: 285.w,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),

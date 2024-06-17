@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/lodge/domain/house_model.dart';
 
 import 'package:gidah/src/features/lodge/presentation/screens/house_detail_screen.dart';
@@ -41,8 +42,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: 40.h,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 30),
@@ -67,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               icon: const Icon(Icons.cancel))
                           : const Icon(Icons.search),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     onFieldSubmitted: (value) {
@@ -79,8 +80,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           SizedBox(
-            height: 300,
-            width: double.infinity,
+            height: 300.h,
+            width: double.infinity.w,
             child: Visibility(
               visible: searchStatus,
               child: FutureBuilder(
@@ -114,8 +115,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                     },
                                   )),
                                   child: Container(
-                                    height: 90,
-                                    width: 325,
+                                    height: 90.h,
+                                    width: 325.w,
                                     decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
                                         borderRadius:
@@ -128,10 +129,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                           CircleAvatar(
                                             backgroundImage: NetworkImage(
                                                 house.displayPicture),
-                                            radius: 35,
+                                            radius: 35.r,
                                           ),
-                                          const SizedBox(
-                                            width: 10,
+                                          SizedBox(
+                                            width: 10.w,
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -139,8 +140,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                             child: Column(
                                               children: [
                                                 Text(house.name),
-                                                const SizedBox(
-                                                  height: 6.5,
+                                                SizedBox(
+                                                  height: 6.5.h,
                                                 ),
                                                 Text(house.address),
                                               ],

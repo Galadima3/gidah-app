@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/auth/data/auth_repository.dart';
 import 'package:gidah/src/features/auth/presentation/screens/login_screen.dart';
 
@@ -146,7 +147,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     //Profile Image
                     CircleAvatar(
-                      radius: 50,
+                      radius: 50.r,
                       backgroundColor: const Color(0xffFDCF09),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
@@ -155,8 +156,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ? const AssetImage('asset/images/default.png')
                                   as ImageProvider<Object>
                               : NetworkImage(data?.profileImage ?? ''),
-                          width: 100,
-                          height: 100,
+                          width: 100.w,
+                          height: 100.h,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -167,9 +168,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       padding: const EdgeInsets.all(6.5),
                       child: Text(
                         data!.fullName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 24.sp,
                           fontFamily: 'Urbanist',
                           fontWeight: FontWeight.w500,
                         ),
@@ -180,18 +181,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       padding: const EdgeInsets.all(4),
                       child: Text(
                         data.email,
-                        style: const TextStyle(
-                          color: Color(0xFF242424),
-                          fontSize: 14,
+                        style: TextStyle(
+                          color: const Color(0xFF242424),
+                          fontSize: 14.sp,
                           fontFamily: 'Urbanist',
                           fontWeight: FontWeight.w400,
-                          height: 0.10,
+                          height: 0.10.h,
                           letterSpacing: 0.20,
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 385,
+                      height: 385.h,
                       width: double.infinity,
                       child: ListView.builder(
                         itemCount: settings.length,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gidah/src/features/bookmark/data/bookmark_state_notifier.dart';
 import 'package:gidah/src/features/lodge/presentation/screens/house_detail_screen.dart';
 
@@ -19,13 +20,13 @@ class BookmarkScreen extends ConsumerWidget {
       body: bookmark.isEmpty
           ? Center(
               child: SizedBox(
-                height: 200,
+                height: 200.h,
                 child: Image.network(
                     "https://static-00.iconduck.com/assets.00/zzz-emoji-2048x1609-37dbjn9b.png"),
               ),
             )
           : SizedBox(
-              height: height * 0.75,
+              height: height * 0.75.h,
               child: ListView.builder(
                 itemCount: bookmark.length,
                 itemBuilder: (context, index) {
@@ -40,11 +41,11 @@ class BookmarkScreen extends ConsumerWidget {
                         },
                       )),
                       child: Container(
-                        height: 90,
-                        width: 325,
+                        height: 90.h,
+                        width: 325.w,
                         decoration: BoxDecoration(
                             color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(12.r)),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Row(
@@ -54,7 +55,7 @@ class BookmarkScreen extends ConsumerWidget {
                               CircleAvatar(
                                 backgroundImage:
                                     NetworkImage(house.displayPicture),
-                                radius: 35,
+                                radius: 35.r,
                               ),
 
                               //house details
@@ -64,8 +65,8 @@ class BookmarkScreen extends ConsumerWidget {
                                 child: Column(
                                   children: [
                                     Text(house.name),
-                                    const SizedBox(
-                                      height: 6.5,
+                                    SizedBox(
+                                      height: 6.5.h,
                                     ),
                                     Text(house.address),
                                   ],
